@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BlindBuy - ช้อปด้วยเสียง (ใช้งานจริง)</title>
+  <title>BlindBuy - พูดแล้วเห็นจริง</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     :root {
@@ -16,156 +16,86 @@
     * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
     body { background: var(--gray); color: var(--text); padding-bottom: 90px; }
 
+    .status-box {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 12px 28px;
+      border-radius: 40px;
+      font-weight: bold;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      z-index: 1000;
+      text-align: center;
+      min-width: 280px;
+    }
+
     .header {
       position: relative;
       height: 220px;
       background: linear-gradient(135deg, var(--pink), var(--dark-pink));
       color: white;
       text-align: center;
-      padding: 35px 15px;
-      overflow: hidden;
+      padding: 40px 15px;
     }
-    .header h1 { font-size: 2.4rem; margin-bottom: 8px; text-shadow: 2px 2px 6px rgba(0,0,0,0.5); }
+    .header h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 2px 2px 6px rgba(0,0,0,0.5); }
     .header p { font-size: 1.2rem; }
-    .header img { position: absolute; bottom: -20px; right: 0; height: 220px; object-fit: contain; }
 
-    .status {
-      position: fixed;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255,255,255,0.95);
-      padding: 10px 24px;
-      border-radius: 40px;
-      font-weight: bold;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.2);
-      z-index: 1000;
-    }
-
-    .cards {
-      display: flex;
-      justify-content: space-around;
-      margin: 20px 15px;
-      gap: 12px;
-    }
+    .cards { display: flex; justify-content: space-around; margin: 20px 15px; gap: 12px; }
     .card {
-      background: white;
-      border-radius: 16px;
-      padding: 18px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      flex: 1;
+      background: white; border-radius: 16px; padding: 18px; text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1); flex: 1;
     }
     .card i { font-size: 2.8rem; color: var(--pink); margin-bottom: 10px; }
     .card p { font-size: 1.05rem; font-weight: bold; }
 
-    .grid {
-      padding: 20px 15px;
-      background: white;
-    }
-    .grid h3 { font-size: 1.4rem; margin-bottom: 15px; color: var(--dark-pink); }
-    .grid-items {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      text-align: center;
-    }
-    .grid-item {
-      background: #fff0f5;
-      border-radius: 14px;
-      padding: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
-    .grid-item img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 6px; }
-    .grid-item span { font-size: 0.85rem; }
-
-    .results {
-      padding: 15px;
-      margin-top: 10px;
-    }
+    .results { padding: 15px; }
     .product {
-      background: white;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      padding: 12px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-      display: flex;
-      gap: 12px;
+      background: white; border-radius: 12px; margin-bottom: 15px; padding: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1); display: flex; gap: 12px;
     }
     .product img { width: 90px; height: 90px; object-fit: contain; border-radius: 8px; }
     .product-info { flex: 1; }
     .product-info h4 { margin-bottom: 6px; }
-    .product-info p { margin: 4px 0; font-size: 0.95rem; }
 
     .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0; right: 0;
-      background: white;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.12);
-      z-index: 999;
+      position: fixed; bottom: 0; left: 0; right: 0; background: white;
+      display: flex; justify-content: space-around; padding: 10px 0;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.12); z-index: 999;
     }
-    .nav-item { text-align: center; font-size: 0.8rem; color: var(--text); }
+    .nav-item { text-align: center; font-size: 0.8rem; }
     .nav-item i { font-size: 1.8rem; color: var(--pink); margin-bottom: 3px; }
-    .nav-item.active i { color: var(--dark-pink); }
   </style>
 </head>
 <body>
 
-  <div id="status" class="status">กำลังฟังคำสั่ง... พูดเลยค่ะ</div>
+  <div id="status" class="status-box">กำลังเริ่มระบบเสียง... กรุณาอนุญาตไมโครโฟน</div>
 
-  <!-- Header Banner -->
   <header class="header">
     <h1>BlindBuy</h1>
-    <p>ช้อปปิ้งด้วยเสียง ไม่ต้องมองหน้าจอ</p>
-    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" alt="ผู้ใช้พูด">
+    <p>พูดชื่อสินค้าที่ต้องการเลยค่ะ</p>
   </header>
 
-  <!-- Cards บริการ -->
   <div class="cards">
-    <div class="card">
-      <i class="fas fa-microphone"></i>
-      <p>สั่งด้วยเสียง</p>
-    </div>
-    <div class="card">
-      <i class="fas fa-truck-fast"></i>
-      <p>ส่งจากหลายร้าน</p>
-    </div>
+    <div class="card"><i class="fas fa-microphone"></i><p>พูดสั่งซื้อ</p></div>
+    <div class="card"><i class="fas fa-truck-fast"></i><p>ส่งทั่วไทย</p></div>
   </div>
 
-  <!-- หมวดหมู่ -->
-  <section class="grid">
-    <h3>หมวดหมู่ยอดนิยม</h3>
-    <div class="grid-items">
-      <div class="grid-item"><img src="https://img.icons8.com/color/96/water-bottle.png" alt=""><span>เครื่องดื่ม</span></div>
-      <div class="grid-item"><img src="https://img.icons8.com/color/96/snacks.png" alt=""><span>ขนม</span></div>
-      <div class="grid-item"><img src="https://img.icons8.com/color/96/shopping-basket.png" alt=""><span>ของใช้</span></div>
-      <div class="grid-item"><img src="https://img.icons8.com/color/96/discount.png" alt=""><span>โปรโมชั่น</span></div>
-    </div>
-  </section>
-
-  <!-- ผลการค้นหา -->
   <div class="results">
-    <h3 id="resultTitle">ผลการค้นหา</h3>
+    <h3>ผลการค้นหา</h3>
     <div id="products"></div>
   </div>
 
-  <!-- Bottom Navigation -->
   <nav class="bottom-nav">
-    <div class="nav-item active"><i class="fas fa-home"></i><div>หน้าหลัก</div></div>
-    <div class="nav-item"><i class="fas fa-microphone-lines"></i><div>สั่งเสียง</div></div>
+    <div class="nav-item"><i class="fas fa-home"></i><div>หน้าหลัก</div></div>
+    <div class="nav-item"><i class="fas fa-microphone-lines"></i><div>เสียง</div></div>
     <div class="nav-item"><i class="fas fa-shopping-cart"></i><div>ตะกร้า (<span id="cartCount">0</span>)</div></div>
-    <div class="nav-item"><i class="fas fa-history"></i><div>ประวัติ</div></div>
-    <div class="nav-item"><i class="fas fa-user"></i><div>บัญชี</div></div>
   </nav>
 
   <script>
     const status = document.getElementById('status');
     const productsDiv = document.getElementById('products');
-    const resultTitle = document.getElementById('resultTitle');
     const cartCount = document.getElementById('cartCount');
 
     let cart = JSON.parse(localStorage.getItem('blindbuy_cart')) || [];
@@ -176,67 +106,79 @@
     }
     updateCart();
 
-    // พูดด้วยเสียงไทย
+    // ฟังก์ชันพูดตอบกลับ
     function speak(text) {
       if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'th-TH';
-        utterance.rate = 0.9;   // ช้าเพื่อชัดเจน
-        utterance.pitch = 1.05;
-        speechSynthesis.speak(utterance);
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'th-TH';
+        u.rate = 0.9;     // ช้าเพื่อให้ชัดเจน
+        u.pitch = 1.05;
+        speechSynthesis.speak(u);
       }
     }
 
-    // การจดจำเสียง (Speech Recognition)
+    // ตรวจสอบและเริ่มการรับรู้เสียง
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
+    if (!SpeechRecognition) {
+      status.textContent = 'เบราว์เซอร์นี้ไม่รองรับการพูด กรุณาใช้ Chrome';
+      speak('เบราว์เซอร์นี้ไม่รองรับการพูด กรุณาใช้ Chrome');
+    } else {
       const recognition = new SpeechRecognition();
       recognition.lang = 'th-TH';
       recognition.continuous = true;
       recognition.interimResults = false;
 
-      recognition.onstart = () => status.textContent = 'กำลังฟัง... พูดชื่อสินค้าหรือคำสั่งได้เลยค่ะ';
-      recognition.onend = () => setTimeout(() => recognition.start(), 800);
-      recognition.onerror = (e) => {
-        status.textContent = 'มีปัญหา ลองพูดใหม่นะคะ';
-        console.error(e);
+      recognition.onstart = () => {
+        status.textContent = 'กำลังฟังอยู่... พูดชื่อสินค้าได้เลยค่ะ';
+      };
+
+      recognition.onend = () => {
+        recognition.start(); // ฟังต่อเนื่อง
+      };
+
+      recognition.onerror = (event) => {
+        if (event.error === 'not-allowed') {
+          status.textContent = 'ไม่อนุญาตไมโครโฟน กรุณาอนุญาตแล้วรีเฟรช';
+          speak('กรุณาอนุญาตไมโครโฟน แล้วรีเฟรชหน้านี้นะคะ');
+        } else {
+          status.textContent = 'มีปัญหา ลองพูดใหม่ค่ะ';
+        }
       };
 
       recognition.onresult = (event) => {
-        const command = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
-        status.textContent = 'คุณพูด: ' + command;
-        handleCommand(command);
+        const text = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+        status.textContent = 'คุณพูดว่า: ' + text;
+        handleVoiceCommand(text);
       };
 
-      // เริ่มต้นการฟัง
+      // เริ่มฟังทันที
       window.addEventListener('load', () => {
-        speak('ยินดีต้อนรับสู่ BlindBuy พูดชื่อสินค้าที่ต้องการค้นหา เช่น น้ำดื่ม ขนม โทรศัพท์ หรือพูด สรุปตะกร้า ยกเลิก ประวัติ ได้เลยค่ะ');
+        speak('ยินดีต้อนรับสู่ BlindBuy ค่ะ พูดชื่อสินค้าที่ต้องการ เช่น น้ำดื่ม ขนม โทรศัพท์ หรือ พูดว่าสรุปตะกร้า ยกเลิก สั่งซื้อ ได้เลยนะคะ');
         recognition.start();
       });
-    } else {
-      status.textContent = 'เบราว์เซอร์นี้ไม่รองรับการพูด ใช้ Chrome แนะนำนะคะ';
-      speak('เบราว์เซอร์นี้ไม่รองรับการพูด ใช้ Chrome แนะนำนะคะ');
     }
 
-    async function handleCommand(cmd) {
-      if (cmd.includes('น้ำดื่ม') || cmd.includes('น้ำ') || cmd.includes('เครื่องดื่ม')) {
+    async function handleVoiceCommand(cmd) {
+      if (cmd.includes('น้ำ') || cmd.includes('น้ำดื่ม') || cmd.includes('ดื่ม')) {
         searchProducts('water');
-      } else if (cmd.includes('ขนม') || cmd.includes('ขนมขบเคี้ยว')) {
+      } else if (cmd.includes('ขนม') || cmd.includes('ช็อกโกแลต') || cmd.includes('ขนมขบเคี้ยว')) {
         searchProducts('snack');
       } else if (cmd.includes('โทรศัพท์') || cmd.includes('มือถือ') || cmd.includes('phone')) {
         searchProducts('phone');
-      } else if (cmd.includes('เพิ่ม') || cmd.includes('ใส่ตะกร้า')) {
-        speak('เพิ่มสินค้าล่าสุดลงตะกร้าเรียบร้อยค่ะ');
-        cart.push({ name: 'สินค้าล่าสุด', price: 100 });
-        updateCart();
-      } else if (cmd.includes('สรุปตะกร้า') || cmd.includes('ยอดรวม') || cmd.includes('ตะกร้า')) {
+      } else if (cmd.includes('เพิ่ม') || cmd.includes('ใส่ตะกร้า') || cmd.includes('เอา')) {
+        if (cart.length > 0) {
+          speak('เพิ่มสินค้าล่าสุดลงตะกร้าเรียบร้อยค่ะ ตอนนี้มี ' + cart.length + ' รายการ');
+        } else {
+          speak('ยังไม่มีสินค้าที่ค้นหา ลองค้นหาสินค้าก่อนนะคะ');
+        }
+      } else if (cmd.includes('สรุป') || cmd.includes('ตะกร้า') || cmd.includes('เท่าไหร่')) {
         if (cart.length === 0) {
           speak('ตะกร้าว่างเปล่าค่ะ อยากเพิ่มอะไรไหมคะ');
         } else {
           const total = cart.reduce((sum, item) => sum + (item.price || 0), 0);
-          speak(`ในตะกร้ามี ${cart.length} รายการ รวม ${total} บาท ต้องการสั่งซื้อเลยไหมคะ`);
+          speak('ในตะกร้ามี ' + cart.length + ' รายการ รวม ' + total + ' บาทค่ะ ต้องการสั่งซื้อเลยไหมคะ');
         }
-      } else if (cmd.includes('สั่งซื้อ') || cmd.includes('ยืนยัน') || cmd.includes('ซื้อเลย')) {
+      } else if (cmd.includes('สั่งซื้อ') || cmd.includes('ซื้อเลย') || cmd.includes('ยืนยัน')) {
         if (cart.length > 0) {
           speak('สั่งซื้อเรียบร้อยแล้วค่ะ สินค้าจะส่งภายใน 1-3 วัน ขอบคุณที่ใช้ BlindBuy นะคะ');
           cart = [];
@@ -244,23 +186,21 @@
         } else {
           speak('ยังไม่มีสินค้าในตะกร้าค่ะ');
         }
-      } else if (cmd.includes('ยกเลิก') || cmd.includes('ลบ')) {
+      } else if (cmd.includes('ยกเลิก') || cmd.includes('ลบ') || cmd.includes('ล้าง')) {
         cart = [];
         updateCart();
         speak('ยกเลิกตะกร้าทั้งหมดเรียบร้อยค่ะ');
-      } else if (cmd.includes('ประวัติ') || cmd.includes('ครั้งที่แล้ว')) {
-        speak('ยังไม่มีประวัติการสั่งซื้อในเวอร์ชันนี้ค่ะ แต่เรากำลังพัฒนาอยู่');
       } else {
-        // ค้นหาด้วยคำที่พูดเลย
+        // ค้นหาด้วยคำที่พูด
         searchProducts(cmd);
       }
     }
 
     async function searchProducts(query) {
       try {
-        productsDiv.innerHTML = '<p>กำลังค้นหา...</p>';
-        const response = await fetch(`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=5`);
-        const data = await response.json();
+        productsDiv.innerHTML = '<p>กำลังค้นหา "' + query + '"...</p>';
+        const res = await fetch(`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=5`);
+        const data = await res.json();
 
         productsDiv.innerHTML = '';
 
@@ -270,31 +210,31 @@
           return;
         }
 
-        resultTitle.textContent = `พบ ${data.products.length} รายการ`;
-
-        data.products.forEach(product => {
-          const div = document.createElement('div');
-          div.className = 'product';
-          div.innerHTML = `
-            <img src="${product.thumbnail}" alt="${product.title}">
+        let spokenText = 'พบ ' + data.products.length + ' รายการค่ะ เช่น ';
+        data.products.forEach((p, i) => {
+          const card = document.createElement('div');
+          card.className = 'product';
+          card.innerHTML = `
+            <img src="${p.thumbnail}" alt="${p.title}">
             <div class="product-info">
-              <h4>${product.title}</h4>
-              <p>ราคา: ฿${product.price}</p>
-              <p>คะแนน: ${product.rating} ดาว</p>
+              <h4>${p.title}</h4>
+              <p>ราคา ฿${p.price}</p>
+              <p>คะแนน ${p.rating} ดาว</p>
             </div>
           `;
-          productsDiv.appendChild(div);
+          productsDiv.appendChild(card);
+
+          if (i < 3) spokenText += p.title + ' ราคา ' + p.price + ' บาท, ';
         });
 
-        // อ่านออกเสียงผลลัพธ์
-        const firstProduct = data.products[0];
-        speak(`พบสินค้า เช่น ${firstProduct.title} ราคา ${firstProduct.price} บาท คะแนน ${firstProduct.rating} ดาว พูดว่า เพิ่ม เพื่อใส่ลงตะกร้าได้เลยค่ะ`);
-      } catch (error) {
+        spokenText += 'พูดว่า เพิ่ม เพื่อใส่ลงตะกร้า หรือ สรุปตะกร้า เพื่อดูยอดรวมค่ะ';
+        speak(spokenText);
+      } catch (err) {
         productsDiv.innerHTML = '<p>เกิดข้อผิดพลาดในการค้นหา</p>';
         speak('เกิดข้อผิดพลาดในการค้นหา ลองใหม่นะคะ');
-        console.error(error);
       }
     }
   </script>
 </body>
 </html>
+
