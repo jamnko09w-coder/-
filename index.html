@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BlindBuy - ช้อปด้วยเสียง (Prototype จริง)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --pink-main: #ff4081;
+      --pink-dark: #c2185b;
+      --pink-light: #ff80ab;
+      --bg: #fff;
+      --gray: #f5f5f5;
+      --text: #333;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background: var(--gray); color: var(--text); padding-bottom: 80px; }
+    
+    .header-banner {
+      position: relative;
+      height: 220px;
+      background: linear-gradient(135deg, var(--pink-main), var(--pink-dark));
+      color: white;
+      text-align: center;
+      padding: 30px 15px;
+      overflow: hidden;
+    }
+    .banner-title { font-size: 2.1rem; font-weight: bold; line-height: 1.1; text-shadow: 2px 2px 6px rgba(0,0,0,0.5); }
+    .banner-subtitle { font-size: 1.1rem; margin: 10px 0; }
+    .banner-img { position: absolute; bottom: 0; right: 0; height: 200px; object-fit: contain; }
+
+    .promo-cards {
+      display: flex; justify-content: space-around; margin: 20px 15px; gap: 12px;
+    }
+    .promo-card {
+      background: white; border-radius: 16px; padding: 16px; text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.12); flex: 1;
+    }
+    .promo-card i { font-size: 2.6rem; color: var(--pink-main); margin-bottom: 10px; }
+    .promo-card p { font-size: 1rem; font-weight: bold; }
+
+    .grid-section { padding: 20px 15px; background: white; }
+    .grid-title { font-size: 1.3rem; margin-bottom: 15px; color: var(--pink-dark); }
+    .promo-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; text-align: center;
+    }
+    .grid-item {
+      background: #fff0f5; border-radius: 14px; padding: 12px 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .grid-item img { width: 55px; height: 55px; object-fit: contain; margin-bottom: 8px; }
+    .grid-item span { font-size: 0.85rem; display: block; }
+
+    .slider-section { margin: 25px 15px; border-radius: 20px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
+    .slider-img { width: 100%; display: block; }
+    .slider-overlay {
+      position: absolute; bottom: 25px; left: 20px; color: white;
+      font-size: 1.5rem; font-weight: bold; text-shadow: 3px 3px 8px black;
+    }
+
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; background: white;
+      display: flex; justify-content: space-around; padding: 12px 0;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.1); z-index: 1000;
+    }
+    .nav-item { text-align: center; color: var(--text); font-size: 0.8rem; }
+    .nav-item i { font-size: 1.8rem; color: var(--pink-main); margin-bottom: 4px; }
+    .nav-item.active i { color: var(--pink-dark); }
+
+    .voice-status {
+      position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+      background: rgba(255,255,255,0.95); padding: 10px 20px; border-radius: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-weight: bold; z-index: 999;
+    }
+
+    .results {
+      padding: 15px; margin-top: 20px;
+    }
+    .product-card {
+      background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; gap: 15px;
+    }
+    .product-img { width: 100px; height: 100px; object-fit: contain; }
+    .product-info { flex: 1; }
+  </style>
+</head>
+<body>
+
+  <div id="voiceStatus" class="voice-status">กำลังฟังคำสั่ง... (พูดเลยค่ะ)</div>
+
+  <!-- แบนเนอร์ -->
+  <header class="header-banner">
+    <div class="banner-title">BlindBuy</div>
+    <div class="banner-subtitle">ช้อปปิ้งด้วยเสียง ไม่ต้องมองหน้าจอ</div>
+    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" alt="ผู้ใช้พูด" class="banner-img">
+  </header>
+
+  <!-- การ์ดบริการ -->
+  <div class="promo-cards">
+    <div class="promo-card">
+      <i class="fas fa-microphone"></i>
+      <p>สั่งด้วยเสียง</p>
+    </div>
+    <div class="promo-card">
+      <i class="fas fa-truck-fast"></i>
+      <p>ส่งจากหลายร้าน</p>
+    </div>
+  </div>
+
+  <!-- หมวดหมู่ -->
+  <section class="grid-section">
+    <h3 class="grid-title">หมวดหมู่ยอดนิยม</h3>
+    <div class="promo-grid">
+      <div class="grid-item"><img src="https://img.icons8.com/color/96/water-bottle.png" alt=""><span>เครื่องดื่ม</span></div>
+      <div class="grid-item"><img src="https://img.icons8.com/color/96/snacks.png" alt=""><span>ขนม</span></div>
+      <div class="grid-item"><img src="https://img.icons8.com/color/96/shopping-basket.png" alt=""><span>ของใช้</span></div>
+      <div class="grid-item"><img src="https://img.icons8.com/color/96/discount.png" alt=""><span>โปรโมชั่น</span></div>
+    </div>
+  </section>
+
+  <!-- สไลด์โปร -->
+  <section class="slider-section">
+    <div style="position:relative;">
+      <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=800&q=80" alt="โปรโมชั่น" class="slider-img">
+      <div class="slider-overlay">เริ่มต้นฟรี!<br>สั่งด้วยเสียงง่าย ๆ</div>
+    </div>
+  </section>
+
+  <!-- ผลการค้นหาสินค้า -->
+  <div class="results" id="results">
+    <h3>ผลการค้นหา</h3>
+    <div id="productList"></div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <div class="nav-item active"><i class="fas fa-home"></i><div>หน้าหลัก</div></div>
+    <div class="nav-item"><i class="fas fa-microphone-lines"></i><div>เสียง</div></div>
+    <div class="nav-item"><i class="fas fa-shopping-cart"></i><div>ตะกร้า (<span id="cartCount">0</span>)</div></div>
+    <div class="nav-item"><i class="fas fa-history"></i><div>ประวัติ</div></div>
+    <div class="nav-item"><i class="fas fa-user"></i><div>บัญชี</div></div>
+  </nav>
+
+  <script>
+    const status = document.getElementById('voiceStatus');
+    const productList = document.getElementById('productList');
+    const cartCount = document.getElementById('cartCount');
+
+    let cart = JSON.parse(localStorage.getItem('blindbuy_cart')) || [];
+
+    function updateCartCount() {
+      cartCount.textContent = cart.length;
+      localStorage.setItem('blindbuy_cart', JSON.stringify(cart));
+    }
+    updateCartCount();
+
+    // TTS
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'th-TH';
+        u.rate = 0.9; // ช้าเพื่อชัด
+        speechSynthesis.speak(u);
+      }
+    }
+
+    // Speech Recognition
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      speak('เบราว์เซอร์นี้ไม่รองรับการพูดภาษาไทย กรุณาใช้ Chrome');
+      status.textContent = 'ไม่รองรับการพูด';
+    } else {
+      const rec = new SpeechRecognition();
+      rec.lang = 'th-TH';
+      rec.continuous = true;
+      rec.interimResults = false;
+
+      rec.onstart = () => status.textContent = 'กำลังฟัง... พูดเลยค่ะ';
+      rec.onend = () => setTimeout(() => rec.start(), 800);
+      rec.onerror = (e) => { status.textContent = 'มีปัญหา ลองใหม่'; console.error(e); };
+      rec.onresult = (e) => {
+        const cmd = e.results[e.results.length-1][0].transcript.trim().toLowerCase();
+        status.textContent = 'คุณพูด: ' + cmd;
+        processCommand(cmd);
+      };
+
+      // เริ่มฟัง
+      window.onload = () => {
+        speak('ยินดีต้อนรับ BlindBuy พูดชื่อสินค้าที่ต้องการ เช่น น้ำดื่ม หรือ โทรศัพท์ หรือ สรุปตะกร้า');
+        rec.start();
+      };
+    }
+
+    async function processCommand(cmd) {
+      if (cmd.includes('น้ำดื่ม') || cmd.includes('น้ำ') || cmd.includes('เครื่องดื่ม')) {
+        searchProducts('water');
+      } else if (cmd.includes('โทรศัพท์') || cmd.includes('มือถือ')) {
+        searchProducts('phone');
+      } else if (cmd.includes('เพิ่ม') || cmd.includes('ใส่ตะกร้า')) {
+        speak('เพิ่มสินค้าล่าสุดลงตะกร้าเรียบร้อยค่ะ');
+        // สมมติเพิ่มสินค้าล่าสุดที่แสดง (พัฒนาต่อได้)
+        cart.push({name: 'สินค้าตัวอย่าง', price: 100});
+        updateCartCount();
+      } else if (cmd.includes('สรุปตะกร้า') || cmd.includes('ยอดรวม')) {
+        if (cart.length === 0) {
+          speak('ตะกร้าว่างเปล่าค่ะ');
+        } else {
+          const total = cart.reduce((sum, i) => sum + (i.price || 0), 0);
+          speak(`ตะกร้ามี ${cart.length} รายการ รวม ${total} บาท ต้องการสั่งซื้อไหมคะ`);
+        }
+      } else if (cmd.includes('สั่งซื้อ') || cmd.includes('ยืนยัน')) {
+        speak('สั่งซื้อเรียบร้อย สินค้าจะส่งเร็ว ๆ นี้ค่ะ ขอบคุณที่ใช้ BlindBuy');
+        cart = [];
+        updateCartCount();
+      } else if (cmd.includes('ยกเลิก')) {
+        cart = [];
+        updateCartCount();
+        speak('ยกเลิกตะกร้าเรียบร้อยค่ะ');
+      } else {
+        // ค้นหาคำที่พูดเป็น keyword
+        searchProducts(cmd);
+      }
+    }
+
+    async function searchProducts(query) {
+      try {
+        productList.innerHTML = '<p>กำลังค้นหา...</p>';
+        const res = await fetch(`https://dummyjson.com/products/search?q=${encodeURIComponent(query)}&limit=6`);
+        const data = await res.json();
+        productList.innerHTML = '';
+
+        if (data.products.length === 0) {
+          productList.innerHTML = '<p>ไม่พบสินค้า ลองพูดใหม่นะคะ</p>';
+          speak('ไม่พบสินค้า ลองพูดชื่ออื่นนะคะ');
+          return;
+        }
+
+        data.products.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          card.innerHTML = `
+            <img src="${p.thumbnail}" alt="${p.title}" class="product-img">
+            <div class="product-info">
+              <h4>${p.title}</h4>
+              <p>ราคา: ฿${p.price}</p>
+              <p>คะแนน: ${p.rating} ดาว</p>
+            </div>
+          `;
+          productList.appendChild(card);
+        });
+
+        speak(`พบ ${data.products.length} รายการสินค้า เช่น ${data.products[0].title} ราคา ${data.products[0].price} บาท ต้องการเพิ่มลงตะกร้าไหมคะ`);
+      } catch (err) {
+        productList.innerHTML = '<p>เกิดข้อผิดพลาดในการค้นหา</p>';
+        speak('เกิดข้อผิดพลาดในการค้นหา ลองใหม่นะคะ');
+      }
+    }
+  </script>
+</body>
+</html>
